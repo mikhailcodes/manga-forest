@@ -1,10 +1,11 @@
 import * as React from 'react';
-
+import { Text } from 'react-native';
 import { BottomTabs } from './BottomTabs';
 import { AuthNavigation } from './AuthNavigation';
 import { useAuthenticationStatus } from '@nhost/react';
 
-export const Navigation = () => {
+
+export const App = () => {
     const { isAuthenticated, isLoading } = useAuthenticationStatus();
 
     console.log('====================================');
@@ -12,15 +13,20 @@ export const Navigation = () => {
     console.log('====================================');
     return (
         <>
-            {isAuthenticated ? (
+            {isLoading ? (
                 <>
-                    <BottomTabs />
+                    <Text>Loading...</Text>
                 </>
-            ) : (
-                <>
-                    <AuthNavigation />
-                </>
-            )}
+            ) :
+                isAuthenticated ? (
+                    <>
+                        <BottomTabs />
+                    </>
+                ) : (
+                    <>
+                        <AuthNavigation />
+                    </>
+                )}
         </>
     );
 };

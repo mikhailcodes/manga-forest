@@ -1,11 +1,13 @@
+
 import React from 'react';
-import { Navigation } from './src/routes/auth';
+import { App } from './src/routes/AuthenticatedRoute';
 import { nhost, NhostReactProvider } from './src/lib/nhost';
 
-export default function App() {
+export default function Base() {
+
   return (
     <NhostReactProvider nhost={nhost}>
-      <Navigation />
+      <App />
     </NhostReactProvider>
   );
 }
