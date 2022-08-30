@@ -3,7 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Auth screens
-import { UnauthScreen } from '../screens/UnauthScreen';
+import { LoginScreen } from '../screens/LoginScreen';
+import { PasswordReset } from '../screens/PasswordReset';
+import { RegisterScreen } from "../screens/RegisterScreen";
 
 const Stack = createStackNavigator();
 export const AuthNavigation = () => {
@@ -14,7 +16,9 @@ export const AuthNavigation = () => {
           headerShown: false
         }}
       >
-        <Stack.Screen name="Home" component={UnauthScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Reset" component={PasswordReset} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
