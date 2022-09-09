@@ -1,10 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useColorScheme } from 'react-native';
+import style from '../stylesheets/mainStyling';
 
 export const BookmarkScreen = () => {
+  const colorScheme = useColorScheme();
   return (
-    <View style={styles.container}>
+    <View style={colorScheme === 'light' ? style.lightContainer : style.darkContainer}>
       <Text>Bookmark screen!</Text>
       <StatusBar style="auto" />
     </View>

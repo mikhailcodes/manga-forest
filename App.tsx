@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { App } from './src/routes/AuthenticatedRoute';
 import { nhost, NhostReactProvider } from './hooks/nhost';
-import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import useFonts from './hooks/useFonts';
 import { View, Text } from 'react-native';
@@ -19,7 +19,7 @@ export default function Base() {
       try {
         await LoadFonts() // Pre-load fonts, make any API calls you need to do here
         // Artificially delay for two seconds to simulate a slow loading experience.
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise(resolve => setTimeout(resolve, 3000));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -52,7 +52,10 @@ export default function Base() {
 
   return (
     <NhostReactProvider nhost={nhost}>
-      <App />
+      {appIsReady ? <View style={{ flex: 1, }}>
+        <App />
+      </View>
+        : null}
     </NhostReactProvider>
   );
 }

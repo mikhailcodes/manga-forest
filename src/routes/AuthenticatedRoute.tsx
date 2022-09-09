@@ -1,32 +1,49 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { Text } from 'react-native';
-import { BottomTabs } from './BottomTabs';
+import { BottomTabs, ProfileStacks } from './BottomTabs';
 import { AuthNavigation } from './AuthNavigation';
-import { useAuthenticationStatus } from '@nhost/react';
+import { useAuthenticationStatus, useSignInEmailPassword } from '@nhost/react';
+import { getSecureStore } from '.././modules/@internal';
 
+
+async function getValueFor(key: string) {
+    let result = await getSecureStore(key);
+    return result;
+}
 
 export const App = () => {
-    const { isAuthenticated, isLoading } = useAuthenticationStatus();
+    const { isAuthenticated } = useAuthenticationStatus();
+    const { signInEmailPassword, isLoading } = useSignInEmailPassword()
 
-    console.log('====================================');
-    console.log('Authenticated?', isAuthenticated);
-    console.log('====================================');
+    const authenticateUser = async () => {
+        getValueFor('storedUser').then(user => {
+            if (user) {
+                const storedUser = JSON.parse(user)
+                signInEmailPassword(storedUser.email, storedUser.password)
+            } else {
+                return false
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    useEffect(() => {
+        authenticateUser();
+    }, []);
+
     return (
         <>
-            {isLoading ? (
+            {isAuthenticated ? (
                 <>
-                    <Text>Loading...</Text>
+                    <BottomTabs />
                 </>
-            ) :
-                isAuthenticated ? (
-                    <>
-                        <BottomTabs />
-                    </>
-                ) : (
-                    <>
-                        <AuthNavigation />
-                    </>
-                )}
+            ) : (
+                <>
+                    <AuthNavigation />
+                </>
+            )}
         </>
     );
 };

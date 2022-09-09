@@ -2,18 +2,19 @@ import { StatusBar } from 'expo-status-bar';
 
 import React, { useState } from 'react';
 import { Text, View, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Pressable } from 'react-native';
-import { useSignInEmailPassword } from '@nhost/react';
-import styles from './stylesheets/authScreens';
+import { useSignUpEmailPassword } from '@nhost/react';
+import styles from '../../stylesheets/authScreens';
 
-import { SecondaryBrandButton, AuthButtons } from "../components/buttons";
-import { InputField } from "../components/inputs";
+import { useSecureStore } from '../../modules/@internal';
+
+import { PrimaryBrandButton, AuthButtons } from "../../components/buttons";
+import { InputField } from "../../components/inputs";
 import { Ionicons } from '@expo/vector-icons';
-
 
 const fields = [
   {
     name: 'Email',
-    placeholder: 'hello@company.com',
+    placeholder: 'Your Email',
     type: 'email'
   },
   {
@@ -34,8 +35,9 @@ const oAuth = [
   },
 ]
 
-export const LoginScreen = ({ navigation: { navigate } }) => {
-  const { signInEmailPassword, isSuccess, isError, error } = useSignInEmailPassword()
+export const RegisterScreen = ({ navigation: { goBack }, route }) => {
+
+  const { signUpEmailPassword, isSuccess, isLoading, isError, error } = useSignUpEmailPassword()
 
   const isAnEmail = (email: string) => {
     const re = /\S+@\S+\.\S+/;
@@ -45,6 +47,11 @@ export const LoginScreen = ({ navigation: { navigate } }) => {
   const [errorText, setErrorText] = useState('');
   const [formFields, setFormFields] = React.useState({ email: '', password: '' });
 
+  const storeData = (key: any, data: any) => {
+    const toJSON = JSON.stringify(data);
+    useSecureStore(key, toJSON)
+  }
+
   const handleChange = (name: any, value: any) => {
     setFormFields({
       ...formFields,
@@ -53,19 +60,25 @@ export const LoginScreen = ({ navigation: { navigate } }) => {
   };
 
   const onButtonPress = () => {
-    isAnEmail(formFields.email) ? signInEmailPassword(formFields.email, formFields.password) : errorMessage('failed_regex')
-
-    isError ? errorMessage(error) : '';
-    isError ? errorMessage(error?.message) : '';
+    Keyboard.dismiss() // dismiss keyboard
+    if (isAnEmail(formFields.email)) {
+      signUpEmailPassword(formFields.email, formFields.password).then((response) => {
+        response.isError ? responseMessage(response.error?.message, response.error?.status) : ''
+        response.isSuccess ? storeData('storedUser', response) : '';
+      })
+    } else {
+      responseMessage('failed_regex', false)
+    }
   }
 
-  const errorMessage = (message: any) => {
-    message === 'failed_regex' ? setErrorText('Please check email format. Email format is not allowed.') : setErrorText(message)
+  const responseMessage = (message: any, status: any) => {
+    message === 'failed_regex' ? setErrorText('Please enter a valid email') : setErrorText(`${message}.`);
 
     setTimeout(() => {
       setErrorText('')
-    }, 3000);
+    }, 5000);
   }
+
 
   return (
     <>
@@ -79,13 +92,13 @@ export const LoginScreen = ({ navigation: { navigate } }) => {
               <Ionicons
                 name="ios-arrow-back-circle-outline"
                 size={30}
-                color="white"
-                onPress={() => console.log('pressed')}
+                color="#a3ff65"
+                onPress={() => goBack()}
               />
             </Pressable>
 
-            <Text style={styles.heading}>
-              Login to MangaForest
+            <Text style={[styles.heading, styles.brand_text]}>
+              Create an account
             </Text>
 
             {fields.map(({ name, placeholder, type }) => (
@@ -100,18 +113,11 @@ export const LoginScreen = ({ navigation: { navigate } }) => {
               </InputField>
             ))}
 
-            <Pressable
-              onPress={() =>
-                navigate('Reset', { email: formFields.email })
-              }
-            >
-              <Text style={styles.brand_text}>Forgot password?</Text>
-            </Pressable>
-
-            <SecondaryBrandButton
-              title="Login"
+            <PrimaryBrandButton
+              title="Create Account"
               onPress={onButtonPress}
-            ></SecondaryBrandButton>
+              isLoading={isLoading}
+            ></PrimaryBrandButton>
             {errorText && <Text style={styles.error}>{errorText}</Text>}
 
             <View style={styles.divider}>
@@ -121,7 +127,8 @@ export const LoginScreen = ({ navigation: { navigate } }) => {
             </View>
 
 
-            {oAuth.map(({ provider, text, onPress }) => (
+
+            {oAuth.map(({ provider, text }) => (
               <AuthButtons
                 key={provider}
                 text={text}
@@ -130,7 +137,8 @@ export const LoginScreen = ({ navigation: { navigate } }) => {
               ></AuthButtons>
             ))}
 
-            <StatusBar style="light" />
+
+            <StatusBar style="auto" />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

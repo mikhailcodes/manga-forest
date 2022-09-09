@@ -3,17 +3,17 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Text, View, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Pressable } from 'react-native';
 import { useResetPassword } from '@nhost/react';
-import styles from './stylesheets/authScreens';
+import styles from '../../stylesheets/authScreens';
 
-import { SecondaryBrandButton, AuthButtons } from "../components/buttons";
-import { InputField } from "../components/inputs";
+import { PrimaryBrandButton } from "../../components/buttons";
+import { InputField } from "../../components/inputs";
 import { Ionicons } from '@expo/vector-icons';
 
 
 const fields = [
   {
     name: 'Email',
-    placeholder: 'hello@company.com',
+    placeholder: 'Your Email',
     type: 'email'
   }
 ]
@@ -30,42 +30,50 @@ const oAuth = [
 ]
 
 export const PasswordReset = ({ navigation: { goBack }, route }) => {
-  const { resetPassword, isLoading, isSent, isError, error } = useResetPassword()
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault()
-
-    await resetPassword('joe@example.com', {
-      redirectTo: 'http://localhost:3000/settings/change-password'
-    })
-  }
-
-  const isAnEmail = (email: string) => {
-    var re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  }
 
   const [errorText, setErrorText] = useState('');
   const [fieldEmail, setFieldEmail] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const { resetPassword, isLoading } = useResetPassword()
+
+  const isAnEmail = (email: string) => {
+    if (email === null) {
+      return false
+    }
+
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  }
 
   const handleChange = (value: any) => {
     setFieldEmail(value);
   };
 
   const onButtonPress = () => {
-    isAnEmail(fieldEmail) ? resetPassword(fieldEmail) : errorMessage('failed_regex')
+    if (isAnEmail(fieldEmail)) {
+      resetPassword(fieldEmail).then((response) => {
+        response.isError ? responseMessage(response.error?.message, response.error?.status) : ''
 
-    isError ? errorMessage(error?.message) : '';
-    isSent ? console.log('success') : '';
+        response.isSent ? responseMessage('Please check your inbox for instructions on how to access your account.', 200) : ''
+      })
+    } else {
+      responseMessage('failed_regex', false)
+    }
   }
 
-
-  const errorMessage = (message: any) => {
-    message === 'failed_regex' ? setErrorText('Please check email format. Email format is not allowed.') : setErrorText(message)
+  const responseMessage = (message: any, status: any) => {
+    if (status === 200) {
+      setSuccessMessage(message)
+      setFieldEmail('') // clear the field after success
+    } else {
+      message === 'failed_regex' ? setErrorText('Please enter a valid email') : setErrorText(`${message}. Please contact support.`);
+    }
 
     setTimeout(() => {
       setErrorText('')
-    }, 3000);
+      setSuccessMessage('')
+    }, 5000);
   }
 
   return (
@@ -80,13 +88,13 @@ export const PasswordReset = ({ navigation: { goBack }, route }) => {
               <Ionicons
                 name="ios-arrow-back-circle-outline"
                 size={30}
-                color="white"
+                color="#a3ff65"
                 onPress={() => goBack()}
               />
             </Pressable>
 
-            <Text style={styles.heading}>
-              Login to MangaForest
+            <Text style={[styles.heading, styles.brand_text]}>
+              Reset your password
             </Text>
 
             {fields.map(({ name, placeholder, type }) => (
@@ -94,26 +102,30 @@ export const PasswordReset = ({ navigation: { goBack }, route }) => {
                 name={name}
                 key={name}
                 type={type}
+                value={fieldEmail}
                 defaultValue={route.params?.email}
                 placeholder={placeholder}
-                onChangeText={(text: any) => handleChange(type, text)}
+                onChangeText={(text: any) => handleChange(text)}
               >
               </InputField>
             ))}
 
-            <Pressable>
-              <Text style={styles.brand_text}>Forgot password?</Text>
-            </Pressable>
-
-            <SecondaryBrandButton
+            <PrimaryBrandButton
               title="Reset Password"
               onPress={onButtonPress}
-            ></SecondaryBrandButton>
-            {errorText && <Text style={styles.error}>{errorText}</Text>}
+              isLoading={isLoading}
+            ></PrimaryBrandButton>
 
+            {errorText && <View>
+              <Text style={styles.error}>{errorText}</Text>
+            </View>}
 
+            {successMessage &&
+              <View>
+                <Text style={styles.brand_text}>{successMessage}</Text>
+              </View>}
 
-            <StatusBar style="light" />
+            <StatusBar style="auto" />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>

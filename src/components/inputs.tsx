@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import styles from '../stylesheets/authScreens';
+
 
 export function InputField(props: any) {
-    const { placeholder, type = 'text', onChangeText, defaultValue } = props;
+    const { placeholder, type = 'text', onChangeText, defaultValue, value } = props;
     const [hidePass, setHidePass] = useState(true);
     return (
         <View style={styles.view}>
@@ -15,6 +17,7 @@ export function InputField(props: any) {
                 autoCorrect={false}
                 autoCapitalize='none'
                 style={styles.input}
+                value={value}
                 {...props.type === 'email' ? { keyboardType: 'email-address' } : {}}
                 {...props.type === 'password' ? { secureTextEntry: hidePass } : {}}
                 {...props.defaultValue ? { defaultValue: defaultValue } : {}}
@@ -31,34 +34,3 @@ export function InputField(props: any) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    view: {
-        marginVertical: 15,
-    },
-    input: {
-        height: 60,
-        width: '100%',
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: '#6f6f6f',
-        padding: 10,
-        paddingLeft: 20,
-        backgroundColor: 'transparent',
-        color: '#fff',
-        position: 'relative',
-        textTransform: 'lowercase',
-
-    },
-    label: {
-        color: '#6f6f6f',
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 5,
-    },
-    icon: {
-        position: 'absolute',
-        right: 20,
-        top: 42,
-    },
-});
