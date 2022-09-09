@@ -1,33 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { StyleSheet, Text, View, Button, useColorScheme } from 'react-native';
 import { useUserData } from '@nhost/react';
-import style from '../stylesheets/mainStyling';
+import useGlobalStyles from '../stylesheets/mainStyling';
 
-
+import { MainSlider, CategoryPills } from '../components/base';
 
 export const HomeScreen = ({ navigation }: any) => {
-  const colorScheme = useColorScheme();
+  const style = useGlobalStyles();
   const userData = useUserData()
   return (
-    <View style={colorScheme === 'light' ? style.lightContainer : style.darkContainer}>
-      <Text>Home screen! {userData?.displayName} </Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Profile')}
-      />
-
-
+    <>
+      <MainSlider></MainSlider>
+      <SafeAreaView style={style.viewContainer}>
+        <View>
+          <CategoryPills></CategoryPills>
+        </View>
+      </SafeAreaView>
       <StatusBar style="auto" />
-    </View>
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

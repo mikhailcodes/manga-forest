@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Text } from 'react-native';
-import { BottomTabs, ProfileStacks } from './BottomTabs';
+import { BottomTabs } from './Navigation';
 import { AuthNavigation } from './AuthNavigation';
 import { useAuthenticationStatus, useSignInEmailPassword } from '@nhost/react';
 import { getSecureStore } from '.././modules/@internal';

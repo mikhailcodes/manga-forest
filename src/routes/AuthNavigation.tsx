@@ -3,10 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Auth screens
-import { LoginScreen } from '../screens/AuthScreens/LoginScreen';
-import { PasswordReset } from '../screens/AuthScreens/PasswordReset';
-import { RegisterScreen } from "../screens/AuthScreens/RegisterScreen";
-import { SplashScreen } from "../screens/AuthScreens/SplashScreen";
+import { LoginScreen } from '../screens/user/LoginScreen';
+import { PasswordReset } from '../screens/user/PasswordReset';
+import { RegisterScreen } from "../screens/user/RegisterScreen";
+import { SplashScreen } from "../screens/user/SplashScreen";
 
 const Stack = createStackNavigator();
 export const AuthNavigation = () => {

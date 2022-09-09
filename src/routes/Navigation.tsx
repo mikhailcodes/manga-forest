@@ -13,13 +13,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import styles from '../stylesheets/mainStyling';
 
 // Screens
-import { HomeScreen } from '../../src/screens/HomeScreen';
+import { HomeScreen } from '../screens/HomeScreen';
 import { SearchScreen } from '../screens/SearchScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
+import { SettingsScreen } from '../screens/SettingsScreen';
 import { BookmarkScreen } from '../screens/BookmarkScreen';
 
 // Profile Screens
-import { LoginScreen2 } from '../screens/SettingsScreens/LoginScreen';
+import { EditProfile } from '../screens/settings/EditProfile';
 
 //const Stack = createStackNavigator();
 const Tabs = AnimatedTabBarNavigator();
@@ -34,9 +34,33 @@ const TabBarIcon = (props: any) => {
   );
 };
 
+function ProfileNavigator() {
+  const ProfileStack = createStackNavigator()
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStack.Screen
+        name="Edit Profile"
+        component={EditProfile}
+        options={{
+          headerShown: false,
+        }}
+      />
+    </ProfileStack.Navigator>
+  )
+}
+
+
+
 export const BottomTabs = () => {
   const colorScheme = useColorScheme();
-  const tabBgColor = colorScheme === 'light' ? '#141414' : 'black';
+  const tabBgColor = colorScheme === 'light' ? '#141414' : '#4EC300';
   const activeIconColor = colorScheme === 'light' ? 'white' : 'black';
   const tintColorScheme = colorScheme === 'light' ? { tintColor: 'black', subColor: 'white' } : { tintColor: '#4EC300', subColor: 'white' };
   const Stack = createStackNavigator();
@@ -120,27 +144,3 @@ export const BottomTabs = () => {
     </NavigationContainer>
   );
 };
-
-
-
-function ProfileNavigator() {
-  const ProfileStack = createStackNavigator()
-  return (
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ProfileStack.Screen
-        name="Home2"
-        component={LoginScreen2}
-        options={{
-          headerShown: false,
-        }}
-      />
-    </ProfileStack.Navigator>
-  )
-}

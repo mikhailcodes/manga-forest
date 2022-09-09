@@ -3,34 +3,16 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Text, View, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Pressable } from 'react-native';
 import { useResetPassword } from '@nhost/react';
-import styles from '../../stylesheets/authScreens';
+import useGlobalStyles from '../../stylesheets/mainStyling';
 
 import { PrimaryBrandButton } from "../../components/buttons";
 import { InputField } from "../../components/inputs";
 import { Ionicons } from '@expo/vector-icons';
+import { SignupFields } from '../../components/fields';
 
-
-const fields = [
-  {
-    name: 'Email',
-    placeholder: 'Your Email',
-    type: 'email'
-  }
-]
-
-const oAuth = [
-  {
-    provider: 'apple',
-    text: 'Continue with Apple',
-  },
-  {
-    provider: 'google',
-    text: 'Continue with Google',
-  },
-]
 
 export const PasswordReset = ({ navigation: { goBack }, route }) => {
-
+  const style = useGlobalStyles();
   const [errorText, setErrorText] = useState('');
   const [fieldEmail, setFieldEmail] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -80,11 +62,11 @@ export const PasswordReset = ({ navigation: { goBack }, route }) => {
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.full_width}>
+        style={style.full_width}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.full_width}>
+          <View style={style.full_width}>
 
-            <Pressable style={styles.backButton}>
+            <Pressable style={style.backButton}>
               <Ionicons
                 name="ios-arrow-back-circle-outline"
                 size={30}
@@ -93,11 +75,11 @@ export const PasswordReset = ({ navigation: { goBack }, route }) => {
               />
             </Pressable>
 
-            <Text style={[styles.heading, styles.brand_text]}>
+            <Text style={[style.heading, style.brand_text]}>
               Reset your password
             </Text>
 
-            {fields.map(({ name, placeholder, type }) => (
+            {SignupFields.map(({ name, placeholder, type }) => (
               <InputField
                 name={name}
                 key={name}
@@ -117,12 +99,12 @@ export const PasswordReset = ({ navigation: { goBack }, route }) => {
             ></PrimaryBrandButton>
 
             {errorText && <View>
-              <Text style={styles.error}>{errorText}</Text>
+              <Text style={style.error}>{errorText}</Text>
             </View>}
 
             {successMessage &&
               <View>
-                <Text style={styles.brand_text}>{successMessage}</Text>
+                <Text style={style.brand_text}>{successMessage}</Text>
               </View>}
 
             <StatusBar style="auto" />

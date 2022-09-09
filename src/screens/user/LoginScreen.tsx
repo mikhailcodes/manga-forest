@@ -3,47 +3,18 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Text, View, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, Pressable } from 'react-native';
 import { useSignInEmailPassword } from '@nhost/react';
-import styles from '../../stylesheets/authScreens';
-
-import { useSecureStore } from '../../modules/@internal';
-
+import { SignupFields, OauthFields } from '../../components/fields';
+import { isAnEmail, storeData } from '../../modules/@internal';
 import { PrimaryBrandButton, AuthButtons } from "../../components/buttons";
 import { InputField } from "../../components/inputs";
 import { Ionicons } from '@expo/vector-icons';
+import useGlobalStyles from '../../stylesheets/mainStyling';
 
 
-
-const fields = [
-  {
-    name: 'Email',
-    placeholder: 'Your Email',
-    type: 'email'
-  },
-  {
-    name: 'Password',
-    placeholder: 'Your Password',
-    type: 'password'
-  }
-]
-
-const oAuth = [
-  {
-    provider: 'apple',
-    text: 'Continue with Apple',
-  },
-  {
-    provider: 'google',
-    text: 'Continue with Google',
-  },
-]
 
 export const LoginScreen = ({ navigation: { goBack, navigate }, route }) => {
+  const style = useGlobalStyles();
   const { signInEmailPassword, isLoading } = useSignInEmailPassword()
-
-  const isAnEmail = (email: string) => {
-    const re = /\S+@\S+\.\S+/;
-    return re.test(email);
-  }
 
   const [errorText, setErrorText] = useState('');
   const [formFields, setFormFields] = React.useState({ email: '', password: '' });
@@ -54,11 +25,6 @@ export const LoginScreen = ({ navigation: { goBack, navigate }, route }) => {
       [name]: value,
     });
   };
-
-  const storeData = (key: any, data: any) => {
-    const toJSON = JSON.stringify(data);
-    useSecureStore(key, toJSON)
-  }
 
   const onButtonPress = () => {
     Keyboard.dismiss() // dismiss keyboard
@@ -86,11 +52,11 @@ export const LoginScreen = ({ navigation: { goBack, navigate }, route }) => {
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.full_width}>
+        style={style.full_width}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.full_width}>
+          <View style={style.full_width}>
 
-            <Pressable style={styles.backButton}>
+            <Pressable style={style.backButton}>
               <Ionicons
                 name="ios-arrow-back-circle-outline"
                 size={30}
@@ -99,11 +65,11 @@ export const LoginScreen = ({ navigation: { goBack, navigate }, route }) => {
               />
             </Pressable>
 
-            <Text style={[styles.heading, styles.brand_text]}>
+            <Text style={[style.heading, style.brand_text]}>
               Login to MangaForest
             </Text>
 
-            {fields.map(({ name, placeholder, type }) => (
+            {SignupFields.map(({ name, placeholder, type }) => (
               <InputField
                 name={name}
                 key={name}
@@ -121,7 +87,7 @@ export const LoginScreen = ({ navigation: { goBack, navigate }, route }) => {
                 navigate('Reset', { email: formFields.email })
               }
             >
-              <Text style={styles.brand_text}>Forgot password?</Text>
+              <Text style={style.brand_text}>Forgot password?</Text>
             </Pressable>
 
             <PrimaryBrandButton
@@ -129,16 +95,16 @@ export const LoginScreen = ({ navigation: { goBack, navigate }, route }) => {
               onPress={onButtonPress}
               isLoading={isLoading}
             ></PrimaryBrandButton>
-            {errorText && <Text style={styles.error}>{errorText}</Text>}
+            {errorText && <Text style={style.error}>{errorText}</Text>}
 
-            <View style={styles.divider}>
-              <View style={styles.divider_bar}></View>
-              <Text style={styles.divider_text}>OR</Text>
-              <View style={styles.divider_bar}></View>
+            <View style={style.divider}>
+              <View style={style.divider_bar}></View>
+              <Text style={style.divider_text}>OR</Text>
+              <View style={style.divider_bar}></View>
             </View>
 
 
-            {oAuth.map(({ provider, text, onPress }) => (
+            {OauthFields.map(({ provider, text }) => (
               <AuthButtons
                 key={provider}
                 text={text}

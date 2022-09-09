@@ -1,27 +1,24 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { ScrollView, Text, View, Pressable, FlatList, TouchableOpacity } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSignOut } from '@nhost/react'
 import useGlobalStyles from '../stylesheets/mainStyling';
 import { Header, SettingsList } from '../components/base';
 
 
 
-export const ProfileScreen = ({ navigation: { goBack, navigate } }) => {
+export const SettingsScreen = ({ navigation: { goBack, navigate } }) => {
   const { signOut } = useSignOut()
   const style = useGlobalStyles();
   const NavigateProfile = () => {
-    console.log('====================================');
-    console.log('NavigateProfile1');
-    console.log('====================================');
-    navigate('Profile')
+    navigate('Edit Profile')
   }
 
   const settings = [
     {
       id: '1',
       title: 'Edit Profile',
-      onPress: NavigateProfile(),
+      onPress: NavigateProfile,
 
     },
     {
@@ -39,7 +36,7 @@ export const ProfileScreen = ({ navigation: { goBack, navigate } }) => {
     {
       id: '4',
       title: 'Log Out',
-      onPress: useSignOut(),
+      onPress: signOut,
     },
   ];
 
@@ -64,7 +61,7 @@ export const ProfileScreen = ({ navigation: { goBack, navigate } }) => {
             <SettingsList
               key={id}
               title={title}
-              onPress={() => onPress}
+              onPress={onPress}
             >
             </SettingsList>
           ))}

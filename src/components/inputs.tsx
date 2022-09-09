@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import styles from '../stylesheets/authScreens';
+import useGlobalStyles from '../stylesheets/mainStyling';
 
 
 export function InputField(props: any) {
+    const style = useGlobalStyles();
     const { placeholder, type = 'text', onChangeText, defaultValue, value } = props;
     const [hidePass, setHidePass] = useState(true);
     return (
-        <View style={styles.view}>
-            <Text style={styles.label}>{props.name}</Text>
+        <View style={style.view}>
+            <Text style={style.label}>{props.name}</Text>
             <TextInput
                 placeholder={placeholder}
                 placeholderTextColor="#6f6f6f"
                 textContentType={type}
                 autoCorrect={false}
                 autoCapitalize='none'
-                style={styles.input}
+                style={style.input}
                 value={value}
                 {...props.type === 'email' ? { keyboardType: 'email-address' } : {}}
                 {...props.type === 'password' ? { secureTextEntry: hidePass } : {}}
@@ -28,7 +29,7 @@ export function InputField(props: any) {
                     name={hidePass ? 'eye-off-outline' : 'eye-outline'}
                     size={20}
                     color="white"
-                    style={styles.icon}
+                    style={style.icon}
                     onPress={() => setHidePass(!hidePass)}
                 />) : null}
         </View>
